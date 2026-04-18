@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surah Al-Baqarah - Comprehensive Tafseer Study Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #203864;
+            --secondary: #4472C4;
+            --accent-red: #F4CCCC;
+            --accent-orange: #FCE5CD;
+            --accent-yellow: #FFF2CC;
+            --accent-blue: #D9E8F5;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-color: #999999;
+            --row-alt: #EBF4F9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .controls {
+            padding: 25px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--text-dark);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .filter-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 0 30px;
+            padding-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background: var(--secondary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 14px 12px;
+            border: 1px solid #e9ecef;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
+        tr:nth-child(odd) {
+            background: white;
+        }
+
+        tr:nth-child(even) {
+            background: var(--row-alt);
+        }
+
+        tbody tr:hover {
+            background: #fffacd;
+            box-shadow: inset 0 0 0 1px var(--secondary);
+        }
+
+        .ayat-cell {
+            font-weight: 700;
+            color: var(--secondary);
+            text-align: center;
+            width: 80px;
+            min-width: 80px;
+        }
+
+        .title-cell {
+            font-weight: 600;
+            color: var(--secondary);
+            min-width: 160px;
+        }
+
+        .status-cell {
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            min-width: 60px;
+        }
+
+        .status-cell:hover {
+            transform: scale(1.2);
+        }
+
+        .arabic-text {
+            color: #8B4513;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .expandable-cell {
+            cursor: pointer;
+            position: relative;
+            padding-right: 25px;
+        }
+
+        .expandable-cell:after {
+            content: "▼";
+            position: absolute;
+            right: 8px;
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .expandable-cell:hover:after {
+            opacity: 1;
+        }
+
+        .expanded-content {
+            display: none;
+            padding: 10px;
+            background: #f0f7ff;
+            margin-top: 5px;
+            border-left: 3px solid var(--secondary);
+            border-radius: 4px;
+        }
+
+        .expanded-content.show {
+            display: block;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            padding: 30px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #7ec8ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            td, th {
+                padding: 10px 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+
+            .filter-buttons {
+                width: 100%;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .print-friendly {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .controls, .legend, .stats {
+                display: none;
+            }
+
+            .print-friendly {
+                display: block;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📖 Surah Al-Baqarah Study Table</h1>
+            <p>The Cow - 286 Ayat • Madani Surah</p>
+            <p>Comprehensive Tafseer Learning Resource</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">13</div>
+                <div class="stat-label">Sections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">286</div>
+                <div class="stat-label">Ayat (Verses)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Learning Methods</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completion">0%</div>
+                <div class="stat-label">Progress</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by ayat, title, or keyword...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-status="all">All</button>
+                <button class="filter-btn" data-status="completed">✓ Completed</button>
+                <button class="filter-btn" data-status="in-progress">⏳ In Progress</button>
+                <button class="filter-btn" data-status="not-started">❌ Not Started</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table id="tafseerTable">
+                <thead>
+                    <tr>
+                        <th>Ayat</th>
+                        <th>Section Title</th>
+                        <th>Tafseer Summary</th>
+                        <th>Key Arabic Terms</th>
+                        <th>Quranic Parallels</th>
+                        <th>Hadith References</th>
+                        <th>Fiqh Rulings</th>
+                        <th>Historical Context</th>
+                        <th>Spiritual Lesson</th>
+                        <th>Personal Reflection</th>
+                        <th>Discussion Points</th>
+                        <th style="text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--accent-red);"></div>
+                <span>Aqeedah & Belief</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--accent-orange);"></div>
+                <span>Stories & History</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                <span>Laws & Fiqh</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--accent-blue);"></div>
+                <span>Ethics & Practice</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>How to Use:</strong> Click on cells to expand details. Click status emoji to toggle. Use search to find topics.</p>
+            <p>💡 <strong>Tip:</strong> Spend extra time on Ayat 255 (Al-Kursi), 282 (Al-Mudayanah), and 286 (No Burden Exceeds Capacity)</p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.8;">
+                Made with ❤️ for Quranic learning • 
+                <a href="https://github.com" target="_blank">GitHub</a> • 
+                <a href="https://vercel.com" target="_blank">Hosted on Vercel</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Data for all sections
+        const sections = [
+            {
+                ayat: '1–5',
+                title: 'The Opening & The Believers',
+                tafseer: 'Alif Lam Mim intro; defines Muttaqeen through 4 qualities: belief in unseen, prayer, charity, belief in revelation',
+                arabic: 'Muttaqeen (المتقون), Ghaib (غيب), Ruh (روح), Huda (هدى)',
+                parallel: 'Ayat 2:177 (extended definition), 3:133-134 (Muttaqeen in Aali Imran)',
+                hadith: '',
+                fiqh: 'Tawheed (monotheism) is foundation',
+                context: 'Opening verse - immediately establishes audience and purpose',
+                spiritual: 'Recognition that true belief includes the unseen - cultivates Taqwa',
+                reflection: 'How do I strengthen my belief in what I cannot see?',
+                discussion: 'What does "unseen" mean in modern context?',
+                status: '⏳'
+            },
+            {
+                ayat: '6–20',
+                title: 'Three Types of People',
+                tafseer: 'Humanity divided into 3: Believers, Disbelievers, Hypocrites. Detailed parable of the latter group',
+                arabic: 'Munafiqeen (منافقون), Kufr (كفر), Marad (مرض), Sirat (صراط)',
+                parallel: 'See 4:137-139 (hypocrites), 9:73 (fight hypocrites), 63:1 (hypocrites defined)',
+                hadith: 'Sahih al-Bukhari: Prophet warned about hypocrisy',
+                fiqh: 'Hypocrisy disqualifies from community in certain legal aspects',
+                context: '300+ hypocrites in early Madinah - major challenge',
+                spiritual: 'Disease of the heart - spiritual sickness from internal contradiction',
+                reflection: 'Can I unknowingly have traits of hypocrisy?',
+                discussion: 'Is it possible to have hidden hypocrisy without knowing?',
+                status: '⏳'
+            },
+            {
+                ayat: '21–39',
+                title: 'Call to Worship & Story of Adam',
+                tafseer: 'Open invitation to mankind. Story: Adam created with knowledge of names, tested by Shaytan, descended',
+                arabic: 'Khalifah (خليفة), Shaytan (شيطان), Jannah (جنة), Hubut (هبوط)',
+                parallel: 'See 3:59 (Isa like Adam), 7:11-18 (detailed Adam story)',
+                hadith: 'Muslim #2841: Allah taught Adam names of all things',
+                fiqh: 'Adam as khalifah - role of human as steward with responsibility',
+                context: 'Eating from tree - disobedience of specific command was test',
+                spiritual: 'Life is a test - from Paradise to earth to determine worthiness',
+                reflection: 'Why did Allah create me knowing I would make mistakes?',
+                discussion: 'What is the wisdom in Allah testing us despite knowing our choices?',
+                status: '⏳'
+            },
+            {
+                ayat: '40–103',
+                title: 'Address to Bani Israel',
+                tafseer: 'Longest address to a group - recounts 11 major blessings, repeated violations, punishment',
+                arabic: 'Bani Israel (بني إسرائيل), Aiyah (آية), Manna (المن), Salamun (سلاما)',
+                parallel: 'See 5:20-26 (Musa appeals to Bani Israel), 7:103-162 (Moses & Pharaoh)',
+                hadith: 'Sahih al-Bukhari: They made 70,000 idols after witnessing miracles',
+                fiqh: 'Breaking covenants has consequences - punishment and sealing of hearts',
+                context: 'Mt. Sinai - literal mountain where Torah was given',
+                spiritual: 'Pattern of mercy and rebellion teaches cycle of blessing and responsibility',
+                reflection: 'Am I repeating cycle of receiving blessings then forgetting Allah?',
+                discussion: 'Why does Allah keep showing mercy despite repeated disobedience?',
+                status: '⏳'
+            },
+            {
+                ayat: '104–121',
+                title: 'Disputes with People of the Book',
+                tafseer: 'Refutation of Jewish & Christian doctrines: correction of language (Ra\'ina), exclusive Paradise',
+                arabic: 'Qiblah (القبلة), Ahl al-Kitab (أهل الكتاب), Wadi (واد), Unzurna (انظرنا)',
+                parallel: 'See 5:51 (do not take as allies), 3:64 (call to common word)',
+                hadith: 'Tirmidhi: "Ra\'ina" was disrespectful - say "Unzurna" instead',
+                fiqh: 'Etiquette with Prophet ﷺ is part of Islamic law',
+                context: 'Early Madinah: Jews/Christians claimed sole path to Paradise',
+                spiritual: 'Each nation satisfied with their path - only Islam provides true guidance',
+                reflection: 'How do I engage respectfully with those of different beliefs?',
+                discussion: 'Can we respect other religions while believing Islam is truth?',
+                status: '⏳'
+            },
+            {
+                ayat: '122–141',
+                title: 'Ibrahim & The Ka\'bah',
+                tafseer: 'Ibrahim builds Ka\'bah with Ismail. Makes historic dua: "Accept from us, make us Muslim"',
+                arabic: 'Ka\'bah (الكعبة), Hanif (حنيف), Tawheed (توحيد), Dua (دعاء)',
+                parallel: 'See 3:95-97 (Ka\'bah first house), 22:26-29 (Hajj pillars), 14:35-41 (Ibrahim\'s dua)',
+                hadith: 'Sahih al-Bukhari #3364: Ibrahim raised foundations - Angel Jibril guided',
+                fiqh: 'Hajj is 5th pillar - all Muslims able must perform once in lifetime',
+                context: 'Ibrahim built Ka\'bah ~2000 BCE - oldest continuously used worship site',
+                spiritual: 'Partnership in worship with family - demonstrates willingness to sacrifice',
+                reflection: 'What duas do I make for my ummah and family?',
+                discussion: 'How can we be like Ibrahim in devotion and faith?',
+                status: '⏳'
+            },
+            {
+                ayat: '142–167',
+                title: 'Change of Qiblah & Islamic Identity',
+                tafseer: 'Qiblah changes from Jerusalem to Makkah - Muslim ummah declared "middle nation" (Wasatan)',
+                arabic: 'Qiblah (القبلة), Wasatan (وسطا), Ummah (أمة), Shahada (شهادة)',
+                parallel: 'See 22:78 (Wasatan ummah), 5:8 (be just witnesses), 9:33 (Islam dominate)',
+                hadith: 'Tirmidhi: Qiblah change was difficult - tests faith and obedience',
+                fiqh: 'Qibla direction standardizes community prayer - removes sectarian confusion',
+                context: 'Marks transition: Judaism-based to independent ummah',
+                spiritual: 'Bearing witness means moral responsibility - exemplify justice & mercy',
+                reflection: 'Am I representing Islam well to non-Muslims?',
+                discussion: 'What does it mean to be a "middle nation" in today\'s world?',
+                status: '⏳'
+            },
+            {
+                ayat: '168–203',
+                title: 'Laws of Halal, Fasting & Hajj',
+                tafseer: 'Dietary laws: halal vs haram. Ramadan fasting prescribed. Hajj & Umrah established',
+                arabic: 'Halal (حلال), Haram (حرام), Sawm (صوم), Ramadan (رمضان), Hajj (حج)',
+                parallel: 'See 5:1-5 (foods/hunting), 9:28 (purification), 22:36-37 (sacrifice)',
+                hadith: 'Sahih Muslim #1158: "The best month is Ramadan"',
+                fiqh: '5 forbidden foods defined; fasting obligatory; Hajj is 5th pillar',
+                context: 'Ramadan 2 AH began; Hajj 9 AH first Islamic pilgrimage',
+                spiritual: 'Fasting teaches empathy for poor, self-control. Hajj unites ummah',
+                reflection: 'How does fasting transform me spiritually?',
+                discussion: 'What\'s the wisdom behind specific food prohibitions?',
+                status: '⏳'
+            },
+            {
+                ayat: '204–220',
+                title: 'Social Ethics & Intoxicants',
+                tafseer: 'Warns against deceptive speakers. Discusses khamr (intoxicants) & maysar (gambling)',
+                arabic: 'Khamr (خمر), Maysar (ميسر), Yateem (يتيم), Nushuz (نشوز)',
+                parallel: 'See 5:90-91 (khamr is abomination), 6:145 (haram foods), 16:106',
+                hadith: 'Sahih al-Bukhari: "Every intoxicant is khamr and every khamr is haram"',
+                fiqh: 'Khamr prohibition absolute - no amount permitted. Protects intellect',
+                context: 'Pre-Islamic Arabia: alcohol central to culture - revolutionary prohibition',
+                spiritual: 'Protecting intellect (Aql) - core objective of Shariah law',
+                reflection: 'What substances dull my intellect and distance me from Allah?',
+                discussion: 'Why does Islam focus on protecting the mind?',
+                status: '⏳'
+            },
+            {
+                ayat: '221–242',
+                title: 'Marriage, Divorce & Women\'s Rights',
+                tafseer: 'Nikah, talaq, iddah, breastfeeding. Establishes women\'s rights & dignity',
+                arabic: 'Nikah (نكاح), Talaq (طلاق), Iddah (عدة), Mahr (مهر), Hawl (حول)',
+                parallel: 'See 4:19 (inheritance rights), 4:34 (husband-wife), 65:1-4 (talaq rules)',
+                hadith: 'Sahih al-Bukhari: "Best of you are those best to their wives"',
+                fiqh: 'Iddah protects women, allows reconciliation, prevents paternity confusion',
+                context: 'Pre-Islamic: women had no rights, multiple divorces allowed',
+                spiritual: 'Marriage is ibadah, contract, and mercy. Children are amanah (trusts)',
+                reflection: 'How can I honor spouse\'s rights and dignity?',
+                discussion: 'What does it mean to treat family as "trusts" from Allah?',
+                status: '⏳'
+            },
+            {
+                ayat: '243–260',
+                title: 'Jihad, Stories & Prophethood',
+                tafseer: 'Bani Israel flee wars then revived. Story of Talut vs Jalut (Saul vs Goliath)',
+                arabic: 'Talut (طالوت), Jalut (جالوت), Jihad (جهاد), Rizq (رزق), Quwwah (قوة)',
+                parallel: 'See 18:26 (Dawud kills Jalut), 4:74-75 (jihad), 8:60 (prepare strength)',
+                hadith: 'Sahih Muslim: "Best jihad is word of truth before tyrant ruler"',
+                fiqh: 'Standing against tyranny is obligatory',
+                context: 'Youth (Dawud ~15) defeats giant armor - skill & faith overcome advantage',
+                spiritual: 'Ayat 255 (Al-Kursi): Allah never sleeps - sovereignty of all power',
+                reflection: 'When do I stand up for justice despite pressure?',
+                discussion: 'What are modern spiritual battles we face against Shaytan?',
+                status: '⏳'
+            },
+            {
+                ayat: '261–283',
+                title: 'Charity (Sadaqah) — Most Detailed',
+                tafseer: 'Most extensive Quranic passage on giving: types, etiquette, rewards',
+                arabic: 'Sadaqah (صدقة), Riba (ربا), Qard (قرض), Shahid (شاهد), Katuub (كاتب)',
+                parallel: 'See 9:60 (8 recipients of Zakat), 51:19 (rights of poor), 30:39',
+                hadith: 'Tirmidhi: "Sadaqah extinguishes sin like water extinguishes fire"',
+                fiqh: 'Riba strictly forbidden - 7x cursed. Zakat obligatory',
+                context: 'Ayat 282 longest ayah - Quranic law of contracts & witnesses',
+                spiritual: 'Grain example: 1 seed becomes 700+ heads - multiplication of reward',
+                reflection: 'What am I holding back from giving?',
+                discussion: 'How can I give with ihsan (excellence) and clean intention?',
+                status: '⏳'
+            },
+            {
+                ayat: '284–286',
+                title: 'The Closing Verses',
+                tafseer: 'Perfect conclusion: Ayat 255 (Al-Kursi), Ayat 285 (belief), Ayat 286 (five duas)',
+                arabic: 'Kursi (كرسي), Amanah (أمانة), Tasallut (تسلط), Wasr (وسر)',
+                parallel: 'See 23:116 (Lord of 7 heavens), 39:62 (Creator), 2:255',
+                hadith: 'Sahih Muslim: Prophet recited Ayat 255 before sleep for protection',
+                fiqh: 'Ayat 286 contains 5 duas protecting believer during hardship',
+                context: 'Kursi (footstool) encompasses heavens/earth - human intellect cannot fathom',
+                spiritual: 'Last ayah encapsulates Islamic belief: messenger\'s role, believers\' faith',
+                reflection: 'How do these verses comfort me?',
+                discussion: 'Which dua resonates most with your current struggles?',
+                status: '⏳'
+            }
+        ];
+
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        // Initialize table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            sections.forEach((section, index) => {
+                if (!filterRow(section)) return;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="ayat-cell">${section.ayat}</td>
+                    <td class="title-cell">${section.title}</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.tafseer.substring(0, 50)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)"><span class="arabic-text">${section.arabic.substring(0, 40)}...</span></td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.parallel.substring(0, 40)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.hadith.substring(0, 40) || 'See tafseer'}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.fiqh.substring(0, 40)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.context.substring(0, 40)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.spiritual.substring(0, 40)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.reflection.substring(0, 40)}...</td>
+                    <td class="expandable-cell" onclick="expandCell(this)">${section.discussion.substring(0, 40)}...</td>
+                    <td class="status-cell" onclick="toggleStatus(this, ${index})">${section.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateCompletion();
+        }
+
+        function filterRow(section) {
+            if (searchTerm && !JSON.stringify(section).toLowerCase().includes(searchTerm.toLowerCase())) {
+                return false;
+            }
+
+            if (currentFilter === 'all') return true;
+            if (currentFilter === 'completed') return section.status === '✓';
+            if (currentFilter === 'in-progress') return section.status === '⏳';
+            if (currentFilter === 'not-started') return section.status === '❌';
+            return true;
+        }
+
+        function expandCell(cell) {
+            const sections_map = {
+                2: 'tafseer', 3: 'arabic', 4: 'parallel', 5: 'hadith',
+                6: 'fiqh', 7: 'context', 8: 'spiritual', 9: 'reflection', 10: 'discussion'
+            };
+
+            let fullText = '';
+            const cellIndex = Array.from(cell.parentElement.children).indexOf(cell);
+            const sectionIndex = Array.from(cell.parentElement.parentElement.children).findIndex(r => r === cell.parentElement);
+
+            if (cellIndex >= 2 && cellIndex <= 10) {
+                const key = sections_map[cellIndex];
+                fullText = sections[sectionIndex][key] || 'No content available';
+            }
+
+            showModal(fullText, cell.textContent.split('...')[0]);
+        }
+
+        function showModal(content, title) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.5); display: flex; align-items: center;
+                justify-content: center; z-index: 1000;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 30px; 
+                    max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: 18px;">${title}</h3>
+                    <p style="color: var(--text-dark); line-height: 1.6; font-size: 14px;">${content}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                        style="margin-top: 20px; padding: 10px 20px; background: var(--secondary); 
+                        color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Close
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.onclick = (e) => e.target === modal && modal.remove();
+        }
+
+        function toggleStatus(cell, index) {
+            const statuses = ['⏳', '✓', '❌'];
+            const current = sections[index].status;
+            const nextStatus = statuses[(statuses.indexOf(current) + 1) % statuses.length];
+            
+            sections[index].status = nextStatus;
+            cell.textContent = nextStatus;
+            
+            updateCompletion();
+            showToast(`Section ${index + 1} status updated to ${nextStatus}`);
+        }
+
+        function updateCompletion() {
+            const completed = sections.filter(s => s.status === '✓').length;
+            const percentage = Math.round((completed / sections.length) * 100);
+            document.getElementById('completion').textContent = percentage + '%';
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            searchTerm = e.target.value;
+            renderTable();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.status;
+                renderTable();
+            });
+        });
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+</html>

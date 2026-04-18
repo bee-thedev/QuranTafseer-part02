@@ -1,0 +1,19 @@
+{
+  "name": "surah-al-baqarah-tafseer",
+  "version": "1.0.0",
+  "description": "Interactive Surah Al-Baqarah Comprehensive Tafseer Study Table",
+  "main": "index.html",
+  "keywords": [
+    "quran",
+    "tafseer",
+    "islamic-learning",
+    "study-guide",
+    "surah-al-baqarah"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "deploy": "vercel"
+  }
+}
